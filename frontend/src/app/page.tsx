@@ -1,7 +1,6 @@
 'use client'
 
-import { useAppKit, useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
-import Button from '@/app/components/ui/button'
+import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
 import useAccountBalance from '@/app/lib/hooks/useAccountBalance'
 import useLatestBlockNumber from '@/app/lib/hooks/useBlock'
 import useTransactions from '@/app/lib/hooks/useTransactions'
@@ -9,7 +8,6 @@ import AccountInfo from '@/app/components/screens/AccountInfo'
 import TransactionTable from '@/app/components/screens/TransactionTable'
 
 export default function Home() {
-  const { open, close } = useAppKit();
   const { address, isConnected } =
   useAppKitAccount();
   const { chainId } = useAppKitNetwork()
@@ -37,18 +35,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      {
-        !isConnected && (
-          <Button variant="primary" size="lg" onClick={() => open()}>Connect Wallet</Button>
-        )
-      }
-
-      {
-        isConnected && (
-          <Button variant="danger" size="lg" onClick={() => close()}>Disconnect Wallet</Button>
-        )
-      }
-
       {
         isConnected && (
           <div>

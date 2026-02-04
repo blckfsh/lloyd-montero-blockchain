@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 import { headers } from 'next/headers' // added
 import ContextProvider from '@/lib/reown/context'
+import AppShell from '@/app/components/layout/AppShell'
 
 export const metadata: Metadata = {
   title: 'AR Data Frontend',
@@ -23,7 +24,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} suppressHydrationWarning>
-        <ContextProvider cookies={cookies}>{children}</ContextProvider>
+        <ContextProvider cookies={cookies}>
+          <AppShell>{children}</AppShell>
+        </ContextProvider>
       </body>
     </html>
   )
