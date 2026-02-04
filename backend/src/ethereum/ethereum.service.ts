@@ -23,8 +23,14 @@ export class EthereumService {
         Number(balance),
       );
 
-      return { balance, latestBlockNumber, latestGasPrice };
+      // Convert BigInt to string to avoid JSON serialization issues
+      return {
+        balance: balance.toString(),
+        latestBlockNumber: latestBlockNumber.toString(),
+        latestGasPrice: latestGasPrice.toString(),
+      };
     } catch (error) {
+      console.error(error);
       throw new ServiceUnavailableException(
         'Failed to fetch or store account data',
       );

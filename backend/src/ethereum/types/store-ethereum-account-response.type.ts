@@ -1,6 +1,6 @@
 export type StoreEthereumAccountResponse = {
-  balance: bigint
-  latestBlockNumber: bigint
-  latestGasPrice: bigint
+  balance: string
+  latestBlockNumber: string
+  latestGasPrice: string
 }
 
