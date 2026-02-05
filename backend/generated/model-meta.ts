@@ -23,6 +23,10 @@ const metadata: ModelMeta = {
                 }, balance: {
                     name: "balance",
                     type: "Float",
+                }, tokenBalance: {
+                    name: "tokenBalance",
+                    type: "Float",
+                    isOptional: true,
                 },
             }, uniqueConstraints: {
                 id: {

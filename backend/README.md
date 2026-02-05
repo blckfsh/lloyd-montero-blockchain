@@ -28,6 +28,7 @@ $ pnpm run start:prod
 
 The Ethereum endpoint is available at:
 
+- POST
 ```
 http://localhost:3000/api/v1/ethereum
 ```
@@ -39,6 +40,13 @@ Example request body:
   "address": "0x1BA8f5D548Bf698d5b33d0BD5628C2EB76253264"
 }
 ```
+
+- GET
+```
+http://localhost:3000/api/v1/ethereum/:address
+```
+
+Example param: (0x1BA8f5D548Bf698d5b33d0BD5628C2EB76253264)
 
 ## Run tests
 

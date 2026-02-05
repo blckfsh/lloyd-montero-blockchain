@@ -19,4 +19,5 @@ model Balance {
   id            Int    @id @default(autoincrement())
   walletAddress String @unique
   balance       Float
+  tokenBalance  Float?
 }

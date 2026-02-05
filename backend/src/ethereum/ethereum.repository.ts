@@ -5,15 +5,34 @@ import { PrismaService } from '@/common/services/prisma.service'
 export class EthereumRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  storeBalance(walletAddress: string, balance: number) {
+  getBalance(walletAddress: string) {
+    return this.prismaService.balance.findUnique({
+      where: { walletAddress },
+      select: {
+        balance: true,
+        tokenBalance: true,
+      },
+    })
+  }
+
+  storeBalance(
+    walletAddress: string,
+    balance: number,
+    tokenBalance?: number,
+  ) {
+    const tokenBalanceData =
+      tokenBalance === undefined ? {} : { tokenBalance }
+
     return this.prismaService.balance.upsert({
       where: { walletAddress },
       create: {
         walletAddress,
         balance,
+        ...tokenBalanceData,
       },
       update: {
         balance,
+        ...tokenBalanceData,
       },
     })
   }
