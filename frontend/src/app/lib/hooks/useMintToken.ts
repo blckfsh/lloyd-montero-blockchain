@@ -12,18 +12,26 @@ import {
 } from "@wagmi/core";
 import { config } from "@/app/lib/reown/config";
 import { tokenAbi } from "@/app/lib/abi/token";
+import useRefreshBalance from "@/app/lib/hooks/useRefreshBalance";
 
 type MintTokenParams = {
   address: `0x${string}`;
   amount: bigint;
 };
 
-const useMintToken = (): UseMutationResult<
-  WaitForTransactionReceiptReturnType,
-  Error,
-  MintTokenParams
-> => {
-  return useMutation<
+type UseMintTokenResult = {
+  mintMutation: UseMutationResult<
+    WaitForTransactionReceiptReturnType,
+    Error,
+    MintTokenParams
+  >
+  refreshBalance: ReturnType<typeof useRefreshBalance>
+}
+
+const useMintToken = (): UseMintTokenResult => {
+  const refreshBalance = useRefreshBalance()
+
+  const mintMutation = useMutation<
     WaitForTransactionReceiptReturnType,
     Error,
     MintTokenParams
@@ -51,13 +59,23 @@ const useMintToken = (): UseMutationResult<
 
       return transactionReceipt;
     },
-    onSuccess: (data: WaitForTransactionReceiptReturnType) => {
+    onSuccess: async (
+      data: WaitForTransactionReceiptReturnType,
+      params: MintTokenParams
+    ) => {
       console.log("Transaction successful", data);
+      try {
+        await refreshBalance.mutateAsync({ address: params.address });
+      } catch (error) {
+        console.error("Failed to refresh balance", error);
+      }
     },
     onError: (error: Error) => {
       console.error("Transaction failed", error);
     },
   });
+  
+  return { mintMutation, refreshBalance }
 };
 
 export default useMintToken;

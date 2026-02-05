@@ -2,6 +2,14 @@
 
 Simple client app that allows users to connect wallet and display native balance and blockchain transactions
 
+## Supported Networks
+
+The app supported two networks. The network will be selected based on the value of `NODE_ENV`.
+
+- Development [Base Sepolia](https://sepolia.basescan.org/)
+
+- Production [Ethereum Mainnet](https://etherscan.io/)
+
 ## Installation
 
 ``` bash

@@ -1,9 +1,8 @@
 'use client'
 
-import { wagmiAdapter, projectId } from '@/lib/reown/config'
+import { networks, wagmiAdapter, projectId } from '@/lib/reown/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
-import { mainnet, baseSepolia } from '@reown/appkit/networks'
 import { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 
@@ -26,8 +25,8 @@ const metadata = {
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
-  networks: [mainnet, baseSepolia],
-  defaultNetwork: mainnet,
+  networks,
+  defaultNetwork: networks[0],
   metadata: metadata,
   features: {
     analytics: true // Optional - defaults to your Cloud configuration

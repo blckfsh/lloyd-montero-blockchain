@@ -1,6 +1,5 @@
-'use client'
-
-import WalletConnectionButton from '@/app/components/ui/wallet-connection'
+import Header from '@/app/components/layout/Header'
+import NetworkEnforcer from '@/app/components/layout/NetworkEnforcer'
 
 type AppShellProps = {
   children: React.ReactNode
@@ -8,10 +7,9 @@ type AppShellProps = {
 
 export default function AppShell({ children }: AppShellProps) {
   return (
-    <div className="relative min-h-screen">
-      <div className="absolute right-6 top-6 z-10">
-        <WalletConnectionButton size="md" />
-      </div>
+    <div className="min-h-screen">
+      <NetworkEnforcer />
+      <Header />
       {children}
     </div>
   )

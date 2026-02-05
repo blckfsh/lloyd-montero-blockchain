@@ -33,9 +33,8 @@ const mintSchema = z.object({
 })
 
 export default function MintForm() {
-  const { open } = useAppKit()
   const { address, isConnected } = useAppKitAccount()
-  const mintMutation = useMintToken()
+  const { mintMutation, refreshBalance } = useMintToken()
 
   const form = useForm({
     defaultValues: {
@@ -115,16 +114,20 @@ export default function MintForm() {
           </FormHelper>
 
           <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-            {([canSubmit, isSubmitting]) => (
+            {([canSubmit, isSubmitting]) => {
+              const isRefreshing = refreshBalance.isPending
+              const isMutating = mintMutation.isPending || isRefreshing
+
+              return (
               <Button
                 variant="secondary"
                 size="md"
                 type="submit"
-                disabled={!canSubmit || isSubmitting || mintMutation.isPending}
+                disabled={!canSubmit || isSubmitting || isMutating}
               >
-                {mintMutation.isPending || isSubmitting ? 'Minting...' : 'Mint'}
+                {isMutating ? 'Minting...' : 'Mint'}
               </Button>
-            )}
+            )}}
           </form.Subscribe>
 
           {mintMutation.isError && (
@@ -135,6 +138,11 @@ export default function MintForm() {
           {mintMutation.isSuccess && (
             <div className="text-sm text-green-600">
               Mint submitted successfully.
+            </div>
+          )}
+          {refreshBalance.isSuccess && (
+            <div className="text-sm text-green-600">
+              Balance refreshed successfully.
             </div>
           )}
         </Form>

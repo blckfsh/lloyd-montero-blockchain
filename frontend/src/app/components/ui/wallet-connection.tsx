@@ -1,6 +1,6 @@
 'use client'
 
-import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
+import { useAppKit, useAppKitAccount, useDisconnect  } from '@reown/appkit/react'
 import Button from '@/app/components/ui/button'
 
 type WalletConnectionButtonProps = {
@@ -16,8 +16,9 @@ export default function WalletConnectionButton({
   size = 'lg',
   showDisconnect = true
 }: WalletConnectionButtonProps) {
-  const { open, close } = useAppKit()
+  const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
+  const { disconnect } = useDisconnect()
 
   if (!isConnected) {
     return (
@@ -32,7 +33,7 @@ export default function WalletConnectionButton({
   }
 
   return (
-    <Button variant="danger" size={size} onClick={() => close()}>
+    <Button variant="danger" size={size} onClick={() => disconnect()}>
       {disconnectLabel}
     </Button>
   )

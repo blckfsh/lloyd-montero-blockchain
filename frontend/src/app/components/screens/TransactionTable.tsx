@@ -1,7 +1,11 @@
 'use client'
 
+import { type ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { formatUnits } from 'viem'
+import { useMemo, useState } from 'react'
+
+import DataTable from '@/app/components/ui/table'
 
 type TransactionsResponse = {
   result?: Array<{
@@ -25,6 +29,62 @@ function TransactionTable({
   isLoading,
   error
 }: TransactionTableProps) {
+  const [page, setPage] = useState(1)
+  const pageSize = 10
+
+  const columns: ColumnDef<{
+    timeStamp: string
+    hash: string
+    from: string
+    to: string
+    value: string
+  }>[] = [
+    {
+      header: 'Time',
+      accessorKey: 'timeStamp',
+      cell: ({ getValue }) =>
+        format(new Date(Number(getValue<string>()) * 1000), 'MMM d, yyyy h:mm a')
+    },
+    {
+      header: 'Hash',
+      accessorKey: 'hash',
+      cell: ({ getValue }) => (
+        <span className="break-all">{getValue<string>()}</span>
+      )
+    },
+    {
+      header: 'From',
+      accessorKey: 'from',
+      cell: ({ getValue }) => (
+        <span className="break-all">{getValue<string>()}</span>
+      )
+    },
+    {
+      header: 'To',
+      accessorKey: 'to',
+      cell: ({ getValue }) => (
+        <span className="break-all">{getValue<string>()}</span>
+      )
+    },
+    {
+      header: 'Value',
+      accessorKey: 'value',
+      cell: ({ getValue }) =>
+        `${Number(formatUnits(BigInt(getValue<string>()), 18)).toFixed(4)} ETH`
+    }
+  ]
+
+  const rows = Array.isArray(transactions?.result) ? transactions.result : []
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize))
+  const pageRows = useMemo(() => {
+    const start = (page - 1) * pageSize
+    return rows.slice(start, start + pageSize)
+  }, [page, rows])
+
+  const handlePrev = () => setPage((current) => Math.max(1, current - 1))
+  const handleNext = () =>
+    setPage((current) => Math.min(totalPages, current + 1))
+
   return (
     <div className="mt-6 w-full max-w-3xl">
       <h2 className="text-lg font-semibold">Latest Transactions</h2>
@@ -32,43 +92,38 @@ function TransactionTable({
       {!isLoading && error && <p>Transactions: {error.message}</p>}
       {!isLoading &&
         !error &&
-        (!transactions?.result || !Array.isArray(transactions.result)) && (
-          <p>No transactions found.</p>
-        )}
-      {!isLoading &&
-        !error &&
         Array.isArray(transactions?.result) && (
-          <div className="mt-3 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left border-b">
-                  <th className="py-2 pr-3">Time</th>
-                  <th className="py-2 pr-3">Hash</th>
-                  <th className="py-2 pr-3">From</th>
-                  <th className="py-2 pr-3">To</th>
-                  <th className="py-2 pr-3">Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.result.map((tx) => (
-                  <tr key={tx.hash} className="border-b">
-                    <td className="py-2 pr-3 whitespace-nowrap">
-                      {format(
-                        new Date(Number(tx.timeStamp) * 1000),
-                        'MMM d, yyyy h:mm a'
-                      )}
-                    </td>
-                    <td className="py-2 pr-3 break-all">{tx.hash}</td>
-                    <td className="py-2 pr-3 break-all">{tx.from}</td>
-                    <td className="py-2 pr-3 break-all">{tx.to}</td>
-                    <td className="py-2 pr-3 whitespace-nowrap">
-                      {Number(formatUnits(BigInt(tx.value), 18)).toFixed(4)} ETH
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <>
+            <DataTable
+              columns={columns}
+              data={pageRows}
+              emptyMessage="No transactions found."
+              className="mt-3"
+            />
+            {rows.length > 0 && (
+              <div className="mt-3 flex items-center justify-between text-sm">
+                <button
+                  type="button"
+                  className="px-3 py-1 border rounded disabled:opacity-50"
+                  onClick={handlePrev}
+                  disabled={page === 1}
+                >
+                  Previous
+                </button>
+                <span>
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  type="button"
+                  className="px-3 py-1 border rounded disabled:opacity-50"
+                  onClick={handleNext}
+                  disabled={page === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
     </div>
   )
