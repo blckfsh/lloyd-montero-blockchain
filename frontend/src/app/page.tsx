@@ -27,31 +27,29 @@ export default function Home() {
   } = useTransactions({
     address: (address ?? '') as `0x${string}`,
     chainid: String(normalizedChainId ?? 1),
-    endblock: latestBlockNumber?.toString() ?? '1',
+    endblock: latestBlockNumber ? latestBlockNumber.toString() : undefined,
     page: '1',
     offset: '10',
     sort: 'desc',
   })
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      {
-        isConnected && (
-          <div>
-            <AccountInfo
-              address={address}
-              isBalanceLoading={isBalanceLoading}
-              balanceError={balanceError}
-              balance={balance}
-            />
-            <TransactionTable
-              transactions={transactions}
-              isLoading={isTransactionsLoading}
-              error={transactionsError}
-            />
-          </div>
-        )
-      }
+    <div className="flex flex-col items-center">
+      {isConnected && (
+        <div className="w-full max-w-4xl">
+          <AccountInfo
+            address={address}
+            isBalanceLoading={isBalanceLoading}
+            balanceError={balanceError}
+            balance={balance}
+          />
+          <TransactionTable
+            transactions={transactions}
+            isLoading={isTransactionsLoading}
+            error={transactionsError}
+          />
+        </div>
+      )}
     </div>
   );
 }

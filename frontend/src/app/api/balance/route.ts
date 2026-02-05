@@ -10,7 +10,9 @@ export async function GET(request: NextRequest) {
     }
 
     const baseUrl =
-        process.env.NEXT_PUBLIC_BACKEND_BASE_URL ?? FALLBACK_BACKEND_BASE_URL
+        process.env.BACKEND_BASE_URL ??
+        process.env.NEXT_PUBLIC_BACKEND_BASE_URL ??
+        FALLBACK_BACKEND_BASE_URL
     const response = await fetch(`${baseUrl}/ethereum/${address}`)
 
     const data = await response.json()
@@ -31,7 +33,9 @@ export async function POST(request: NextRequest) {
     console.log('address', address)
 
     const baseUrl =
-        process.env.NEXT_PUBLIC_BACKEND_BASE_URL ?? FALLBACK_BACKEND_BASE_URL
+        process.env.BACKEND_BASE_URL ??
+        process.env.NEXT_PUBLIC_BACKEND_BASE_URL ??
+        FALLBACK_BACKEND_BASE_URL
     const response = await fetch(`${baseUrl}/ethereum`, {
         method: 'POST',
         headers: {

@@ -7,10 +7,10 @@ type AppShellProps = {
 
 export default function AppShell({ children }: AppShellProps) {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <NetworkEnforcer />
       <Header />
-      {children}
+      <main className="flex-1 px-6 py-8">{children}</main>
     </div>
   )
 }

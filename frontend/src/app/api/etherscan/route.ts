@@ -52,12 +52,37 @@ export async function GET(request: NextRequest) {
   url.searchParams.set('sort', parsed.data.sort)
   url.searchParams.set('apikey', process.env.ETHERSCAN_API_KEY ?? '')
 
+  console.log("url", url.toString());
+  console.log("process.env.ETHERSCAN_API_KEY", process.env.ETHERSCAN_API_KEY);
+  
   const response = await fetch(url.toString())
   if (!response.ok) {
     return NextResponse.json({ error: 'Failed to fetch transactions' }, { status: 502 })
   }
 
   const data = await response.json()
-  return NextResponse.json(data)
+  const status = typeof data?.status === 'string' ? data.status : undefined
+  const result = data?.result
+
+  if (status === '0') {
+    const resultText = typeof result === 'string' ? result : ''
+    if (resultText.toLowerCase().includes('no transactions')) {
+      return NextResponse.json({ result: [] })
+    }
+
+    return NextResponse.json(
+      { error: 'Etherscan returned an error', details: data },
+      { status: 502 }
+    )
+  }
+
+  if (!Array.isArray(result)) {
+    return NextResponse.json(
+      { error: 'Unexpected Etherscan response', details: data },
+      { status: 502 }
+    )
+  }
+
+  return NextResponse.json({ result })
 }
 

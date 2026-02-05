@@ -6,7 +6,7 @@ type TransactionsParams = {
   address: `0x${string}`
   chainid: string
   startblock?: string
-  endblock: string
+  endblock?: string
   page: string
   offset: string
   sort: 'asc' | 'desc'
@@ -39,7 +39,7 @@ const useTransactions = (params: TransactionsParams) => {
         address,
         chainid,
         startblock: startblock ?? '1',
-        endblock,
+        endblock: endblock ?? '1',
         page,
         offset,
         sort

@@ -6,8 +6,8 @@ import WalletConnectionButton from '@/app/components/ui/wallet-connection'
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b">
-      <nav className="flex items-center gap-4 text-sm font-medium text-slate-700">
+    <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-4 bg-white px-6 py-4 border-b">
+      <nav className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-700">
         <Link href="/" className="hover:text-slate-900">
           Dashboard
         </Link>

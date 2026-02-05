@@ -9,6 +9,7 @@ export default function NetworkEnforcer() {
   const { chainId, switchNetwork } = useAppKitNetwork()
   const targetNetwork = networks[0]
   const targetChainId = targetNetwork.id
+  console.log('targetChainId', targetChainId)
 
   useEffect(() => {
     if (!chainId || chainId === targetChainId) {

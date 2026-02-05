@@ -9,7 +9,8 @@ if (!projectId) {
   throw new Error('Project ID is not defined')
 }
 
-const isDevelopment = process.env.NODE_ENV === 'development'
+const appEnv = process.env.NEXT_PUBLIC_APP_ENV ?? process.env.NODE_ENV
+const isDevelopment = appEnv === 'development'
 export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
   isDevelopment ? baseSepolia : mainnet,
 ]

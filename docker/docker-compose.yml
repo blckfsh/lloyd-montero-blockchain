@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ../backend
+    env_file:
+      - ../backend/.env
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+      REDIS_CACHE_TTL_SECONDS: 10
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "3001:3000"
+
+  frontend:
+    build:
+      context: ../frontend
+    env_file:
+      - ../frontend/.env.local
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_APP_ENV: development
+      NEXT_PUBLIC_REOWN_PROJECT_ID: ${NEXT_PUBLIC_REOWN_PROJECT_ID:-}
+      BACKEND_BASE_URL: http://backend:3000/api/v1
+      NEXT_PUBLIC_BACKEND_BASE_URL: http://backend:3000/api/v1
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres-data:
+
